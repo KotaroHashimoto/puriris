@@ -202,6 +202,10 @@ class Board {
     async erase() {
 
         let ey = this.lineToErase();
+        if (ey) {
+            const choice = Math.round(Math.random() * 10000) % 26;
+            (new Audio(choice.toString() + '.mp3')).play();
+        }
 
         while (ey) {
 
