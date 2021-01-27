@@ -156,7 +156,7 @@ class Board {
         };
         document.getElementById("up-button").onclick = function() {
             board.cf.rotate += 90;
-            board.cf.rotate = this.cf.rotate % 360; 
+            board.cf.rotate = board.cf.rotate % 360; 
         };
         document.getElementById("down-button").onclick = function() {
             board.cf.cy += SIZE;
