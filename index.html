@@ -15,16 +15,14 @@
 
         let iw = 380;
         let ih = 600;
-        alert(window.innerWidth);
-        alert(windows.innerHeight);
         console.log(window.innerHeight);
         if(window.innerWidth < 400) {
             iw = 380 * window.innerWidth / 400;
             ih = 600 * iw / 400;
         }
-        if(window.innerHeight < 750) {
-            ih = ih * window.innerHeight / 750;
-            iw = iw * ih / 750;
+        if(window.innerHeight < 700) {
+            ih = ih * window.innerHeight / 700;
+            iw = iw * ih / 700;
         }
         canvas.style = 'width: ' + iw.toString() + 'px; height: ' + ih.toString() + 'px:';
 
