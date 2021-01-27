@@ -105,10 +105,12 @@ class Board {
         im.src = 'all.jpg';
         this.images.push(im);
 
-        let audioElm = new Audio('starish.mp3');
+        let audioElm = document.getElementById('starish');
         audioElm.loop = true;
-//        audioElm.autoplay = true;
+        audioElm.autoplay = true;
+        audioElm.volume = 0.2;
 //        audioElm.play();
+        audioElm.pause();
 
         this.fixedBlocks = {};
         const yp = canvas.height;

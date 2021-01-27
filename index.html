@@ -12,7 +12,13 @@
         const canvas = document.createElement('canvas');
         canvas.width = 400;
         canvas.height = 600;
-        canvas.style.backgroundColor = 'black';
+
+        if(window.innerWidth < 380) {
+            const iw = 380 * window.innerWidth / 400;
+            const ih = 600 * iw / 400;
+            canvas.style = 'width: ' + iw.toString() + 'px; height: ' + ih.toString() + 'px:';
+        }
+
         canvas.id = "canvas"
         canvas.class = "wrapper";
         document.body.appendChild(canvas);
@@ -29,7 +35,7 @@
         <button type="button" id="down-button">↓</button>
         <button type="button" id="right-button">→</button>
     </div>
-    <audio controls loop>
+    <audio controls autoplay loop id="starish">
         <source src="starish.mp3" type="audio/mpeg">
     </audio>    
 
