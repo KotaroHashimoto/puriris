@@ -1,16 +1,17 @@
 const ctx = canvas.getContext('2d');
 ctx.strokeStyle = 'white';
 
+let SIZE = 40;
+
 class Figure {
 
-    static SIZE = 40;
-
     constructor() {
+
         this.rotate = 0;
         this.cx = canvas.width / 2;
         this.cy = 20;
-        this.py = Math.round(this.cy / Figure.SIZE) * Figure.SIZE;
-        this.px = this.cx - (Figure.SIZE * this.cx);
+        this.py = Math.round(this.cy / SIZE) * SIZE;
+        this.px = this.cx - (SIZE * this.cx);
 
         this.leftBound = false;
         this.rightBound = false;
@@ -63,22 +64,29 @@ class Figure {
                 y = -1 * center[0];
             }
 
-            this.px = this.cx - (Figure.SIZE * x);
+            this.px = this.cx - (SIZE * x);
             if (this.px === 0) {
                 this.leftBound = true;
             }
-            if (this.px + Figure.SIZE === canvas.width) {
+            if (this.px + SIZE === canvas.width) {
                 this.rightBound = true;
             }
 
-            ctx.drawImage(board.images[this.choice], this.px, this.py - (Figure.SIZE * y), Figure.SIZE, Figure.SIZE);
-            this.rotated.push([this.px, this.py - (Figure.SIZE * y)]);
+            if (board.images[this.choice].complete) {
+                ctx.drawImage(board.images[board.cf.choice], this.px, this.py - (SIZE * y), SIZE, SIZE);
+            } else {
+                board.images[this.choice].onload = function () {
+                    ctx.drawImage(board.images[board.cf.choice], this.px, this.py - (SIZE * y), SIZE, SIZE);
+                };
+            }
+
+            this.rotated.push([this.px, this.py - (SIZE * y)]);
         }
     }
 
     move() {
         this.cy ++;
-        this.py = Math.round(this.cy / Figure.SIZE) * Figure.SIZE;
+        this.py = Math.round(this.cy / SIZE) * SIZE;
     }
 }
 
@@ -97,15 +105,15 @@ class Board {
         im.src = 'all.jpg';
         this.images.push(im);
 
-        let audioElm = new Audio('pita.mp3');
+        let audioElm = new Audio('starish.mp3');
         audioElm.loop = true;
-        audioElm.autoplay = true;
-        audioElm.play();
+//        audioElm.autoplay = true;
+//        audioElm.play();
 
         this.fixedBlocks = {};
         const yp = canvas.height;
         this.fixedBlocks[yp] = [];
-        for(let x = 0; x < canvas.width; x += Figure.SIZE) {
+        for(let x = 0; x < canvas.width; x += SIZE) {
             this.fixedBlocks[yp].push([x, 0]);
         }
 
@@ -116,19 +124,19 @@ class Board {
             switch (e.key) {
                 case "ArrowLeft":
                     if (!this.cf.leftBound) {
-                        this.cf.cx -= Figure.SIZE;
+                        this.cf.cx -= SIZE;
                     }
                     break;
                 case "ArrowRight":
                     if (!this.cf.rightBound) {
-                        this.cf.cx += Figure.SIZE;
+                        this.cf.cx += SIZE;
                     }
                     break;
                 case "ArrowUp":
                     this.cf.rotate += 90;
                     break;
                 case "ArrowDown":
-                    this.cf.cy += Figure.SIZE;
+                    this.cf.cy += SIZE;
                     break;
             }
         
@@ -137,19 +145,19 @@ class Board {
 
         document.getElementById("left-button").onclick = function() {
             if (!board.cf.leftBound) {
-                board.cf.cx -= Figure.SIZE;
+                board.cf.cx -= SIZE;
             }
         };
         document.getElementById("right-button").onclick = function() {
             if (!board.cf.rightBound) {
-                board.cf.cx += Figure.SIZE;
+                board.cf.cx += SIZE;
             }
         };
         document.getElementById("up-button").onclick = function() {
             board.cf.rotate += 90;
         };
         document.getElementById("down-button").onclick = function() {
-            board.cf.cy += Figure.SIZE;
+            board.cf.cy += SIZE;
         };
     }
 
@@ -159,7 +167,7 @@ class Board {
             for (const xi of xs) {
                 const x = xi[0];
                 for(const [cx, cy] of this.cf.rotated) {
-                    if ((parseInt(y) - cy === Figure.SIZE) & (cx === parseInt(x))) {
+                    if ((parseInt(y) - cy === SIZE) & (cx === parseInt(x))) {
 
                         for(const [rx, ry] of this.cf.rotated) {
                             if (!(ry in this.fixedBlocks)) {
@@ -172,10 +180,10 @@ class Board {
                         return true;
                     }
 
-                    if ((cy === parseInt(y)) & (cx - parseInt(x) === Figure.SIZE)) {
+                    if ((cy === parseInt(y)) & (cx - parseInt(x) === SIZE)) {
                         this.cf.leftBound = true;
                     }
-                    if ((cy === parseInt(y)) & (parseInt(x) - cx === Figure.SIZE)) {
+                    if ((cy === parseInt(y)) & (parseInt(x) - cx === SIZE)) {
                         this.cf.rightBound = true;
                     }
 
@@ -192,7 +200,7 @@ class Board {
             if(parseInt(y) === canvas.height) {
                 continue;
             }
-            if (xs.length === canvas.width / Figure.SIZE) {
+            if (xs.length === canvas.width / SIZE) {
                 return parseInt(y);
             }
         }
@@ -209,7 +217,14 @@ class Board {
 
         while (ey) {
 
-            ctx.drawImage(this.images[7], 0, 0, canvas.width, canvas.width);
+            if (this.images[7].complete) {
+                ctx.drawImage(this.images[7], 0, 0, canvas.width, canvas.width);
+            } else {
+                this.images[7].onload = function () {
+                    ctx.drawImage(this.images[7], 0, 0, canvas.width, canvas.width);
+                };
+            }
+
             await this.sleep(500);
 
             let tmp = {}
@@ -220,8 +235,8 @@ class Board {
             this.fixedBlocks = {}
             for(let [y, xs] of Object.entries(tmp)) {
                 if (y <= ey) {
-                    if (tmp[y - Figure.SIZE]) {
-                        this.fixedBlocks[y] = tmp[y - Figure.SIZE];
+                    if (tmp[y - SIZE]) {
+                        this.fixedBlocks[y] = tmp[y - SIZE];
                     }
                 }
                 else if (ey < y) {
@@ -242,8 +257,13 @@ class Board {
 
         for(const [y, xs] of Object.entries(this.fixedBlocks)) {
             for (let xi of xs) {
-//                ctx.strokeRect(x, y, Figure.SIZE, Figure.SIZE);
-                ctx.drawImage(board.images[xi[1]], xi[0], y, Figure.SIZE, Figure.SIZE);
+                if (this.images[xi[1]].complete) {
+                    ctx.drawImage(board.images[xi[1]], xi[0], y, SIZE, SIZE);
+                } else {
+                    this.images[xi[1]].onload = function () {
+                        ctx.drawImage(board.images[xi[1]], xi[0], y, SIZE, SIZE);
+                    };
+                }    
             }
         }
     }
@@ -252,6 +272,7 @@ class Board {
 board = new Board();
 
 async function main() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     board.cf.move();
