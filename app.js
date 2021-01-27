@@ -136,13 +136,12 @@ class Board {
                     break;
                 case "ArrowUp":
                     this.cf.rotate += 90;
+                    this.cf.rotate = this.cf.rotate % 360; 
                     break;
                 case "ArrowDown":
                     this.cf.cy += SIZE;
                     break;
-            }
-        
-            this.cf.rotate = this.cf.rotate % 360; 
+            }        
         });
 
         document.getElementById("left-button").onclick = function() {
@@ -157,6 +156,7 @@ class Board {
         };
         document.getElementById("up-button").onclick = function() {
             board.cf.rotate += 90;
+            board.cf.rotate = this.cf.rotate % 360; 
         };
         document.getElementById("down-button").onclick = function() {
             board.cf.cy += SIZE;
