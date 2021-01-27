@@ -13,11 +13,18 @@
         canvas.width = 400;
         canvas.height = 600;
 
-        if(window.innerWidth < 380) {
-            const iw = 380 * window.innerWidth / 400;
-            const ih = 600 * iw / 400;
-            canvas.style = 'width: ' + iw.toString() + 'px; height: ' + ih.toString() + 'px:';
+        let iw = 380;
+        let ih = 600;
+        console.log(window.innerHeight);
+        if(window.innerWidth < 400) {
+            iw = 380 * window.innerWidth / 400;
+            ih = 600 * iw / 400;
         }
+        if(window.innerHeight < 750) {
+            ih = ih * window.innerHeight / 750;
+            iw = iw * ih / 750;
+        }
+        canvas.style = 'width: ' + iw.toString() + 'px; height: ' + ih.toString() + 'px:';
 
         canvas.id = "canvas"
         canvas.class = "wrapper";
